@@ -1,0 +1,42 @@
+<div class="dropdown checklist-dropdown">
+    <button class="btn btn-outline-secondary dropdown-toggle w-100 text-start" type="button"
+            data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+        <span class="checklist-dropdown-summary">Nenhum selecionado</span>
+    </button>
+    <ul class="dropdown-menu w-100 p-2" style="max-height: 260px; overflow-y: auto;">
+        {% for group, options, index in widget.optgroups %}
+        {% for option in options %}
+        <li>
+            <div class="form-check">
+                {% include "django/forms/widgets/input.html" with widget=option %}
+                <label class="form-check-label" for="{{ option.attrs.id }}">{{ option.label }}</label>
+            </div>
+        </li>
+        {% endfor %}
+        {% endfor %}
+    </ul>
+</div>
+<script>
+(function () {
+    var wrapper = document.currentScript.previousElementSibling;
+    var summary = wrapper.querySelector(".checklist-dropdown-summary");
+    var checkboxes = wrapper.querySelectorAll('input[type="checkbox"]');
+
+    function atualizarResumo() {
+        var marcados = Array.prototype.filter.call(checkboxes, function (cb) { return cb.checked; });
+        if (marcados.length === 0) {
+            summary.textContent = "Nenhum selecionado";
+        } else if (marcados.length <= 2) {
+            summary.textContent = Array.prototype.map.call(marcados, function (cb) {
+                var label = cb.nextElementSibling;
+                return label ? label.textContent.trim() : "";
+            }).join(", ");
+        } else {
+            summary.textContent = marcados.length + " selecionados";
+        }
+    }
+
+    checkboxes.forEach(function (cb) { cb.addEventListener("change", atualizarResumo); });
+    atualizarResumo();
+})();
+</script>

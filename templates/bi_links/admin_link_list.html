@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Gerenciar Links de BI{% endblock %}
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        {% if user.is_admin %}
+        <li class="breadcrumb-item"><a href="{% url 'empresas:lista' %}">Empresas</a></li>
+        {% endif %}
+        <li class="breadcrumb-item"><a href="{% url 'empresas:detalhe' empresa.pk %}">{{ empresa.nome }}</a></li>
+        <li class="breadcrumb-item active">Links de BI</li>
+    </ol>
+</nav>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 mb-0">Links de BI de {{ empresa.nome }}</h1>
+    <a href="{% url 'bi_links_admin:criar' empresa_id=empresa.pk %}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg"></i> Novo link</a>
+</div>
+<div class="table-responsive">
+    <table class="table table-hover align-middle bg-white shadow-sm rounded">
+        <thead><tr><th>Nome</th><th>Setor</th><th>Ativo</th><th></th></tr></thead>
+        <tbody>
+        {% for link in links %}
+        <tr>
+            <td>{{ link.nome }}</td>
+            <td>{{ link.setor.nome }}</td>
+            <td>{% if link.ativo %}<span class="badge text-bg-success">Sim</span>{% else %}<span class="badge text-bg-secondary">Não</span>{% endif %}</td>
+            <td class="text-end">
+                <a href="{% url 'bi_links_admin:editar' empresa_id=empresa.pk pk=link.pk %}" class="btn btn-sm btn-outline-primary">Editar</a>
+                <a href="{% url 'bi_links_admin:excluir' empresa_id=empresa.pk pk=link.pk %}" class="btn btn-sm btn-outline-danger">Excluir</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" class="text-muted">Nenhum link cadastrado.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% include "_pagination.html" %}
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Excluir setor{% endblock %}
+{% block content %}
+<h1 class="h4">Excluir "{{ setor }}"?</h1>
+<p class="text-danger">Esta ação também excluirá, permanentemente, todos os links de BI deste setor (com seus históricos de acesso) e todos os usuários vinculados a ele.</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Confirmar exclusão</button>
+    <a href="{% url 'setores:lista' empresa_id=empresa.pk %}" class="btn btn-outline-secondary">Cancelar</a>
+</form>
+{% endblock %}

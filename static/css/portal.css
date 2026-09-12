@@ -1,0 +1,131 @@
+:root {
+    --axion-navy: #122949;
+    --axion-navy-dark: #0c1c31;
+    --axion-accent: #2badee;
+    --axion-accent-dark: #1193d4;
+    --axion-accent-tint: #e7f6fd;
+    --sidebar-width: 270px;
+}
+
+body {
+    background: #f9fafb;
+}
+
+a { color: var(--axion-accent); }
+a:hover { color: var(--axion-navy); }
+
+/* Retheme Bootstrap primary to brand navy without a Sass rebuild */
+.btn-primary {
+    --bs-btn-bg: var(--axion-navy);
+    --bs-btn-border-color: var(--axion-navy);
+    --bs-btn-hover-bg: var(--axion-navy-dark);
+    --bs-btn-hover-border-color: var(--axion-navy-dark);
+    --bs-btn-active-bg: var(--axion-navy-dark);
+    --bs-btn-active-border-color: var(--axion-navy-dark);
+}
+.btn-outline-primary {
+    --bs-btn-color: var(--axion-navy);
+    --bs-btn-border-color: var(--axion-navy);
+    --bs-btn-hover-bg: var(--axion-navy);
+    --bs-btn-hover-border-color: var(--axion-navy);
+    --bs-btn-active-bg: var(--axion-navy);
+}
+.text-primary { color: var(--axion-navy) !important; }
+.bg-primary { background-color: var(--axion-navy) !important; }
+.nav-tabs .nav-link.active { color: var(--axion-navy); border-color: var(--axion-accent) var(--axion-accent) #fff; border-bottom: 2px solid var(--axion-navy); font-weight: 600; }
+.form-control:focus, .form-select:focus { border-color: var(--axion-accent); box-shadow: 0 0 0 0.2rem rgba(43, 173, 238, 0.2); }
+.accordion-button:not(.collapsed) { color: var(--axion-navy); background-color: var(--axion-accent-tint); }
+.accordion-button:focus { box-shadow: 0 0 0 0.2rem rgba(43, 173, 238, 0.2); }
+
+/* Sidebar */
+.sidebar-brand img { height: 34px; }
+
+.sidebar-welcome {
+    background: #eaedf0;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 13px;
+}
+
+.sidebar-section-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #737d8c;
+    margin: 18px 0 6px;
+}
+
+.setor-accordion .accordion-button {
+    font-size: 14px;
+    padding: 10px 12px;
+    background: transparent;
+    box-shadow: none;
+}
+.setor-accordion .accordion-body { padding: 6px 12px 10px 22px; }
+.setor-accordion .accordion-item { border: none; }
+.setor-empresa { color: #737d8c; font-weight: normal; font-size: 12px; }
+
+.link-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 4px;
+    font-size: 13px;
+    color: #1d2530;
+}
+.link-item:hover { color: var(--axion-accent); text-decoration: none; }
+
+.admin-nav .nav-link { color: #1d2530; padding: 8px 12px; border-radius: 6px; font-size: 14px; }
+.admin-nav .nav-link:hover { background: #eaedf0; }
+.admin-nav .nav-link.active { background: var(--axion-accent-tint); color: var(--axion-navy); font-weight: 600; }
+
+/* Topbar */
+.topbar { min-height: 64px; }
+
+/* KPI cards */
+.kpi-icon {
+    width: 46px; height: 46px; border-radius: 10px;
+    background: var(--axion-accent-tint); color: var(--axion-accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+}
+
+.ranking-item {
+    display: flex; align-items: center; justify-content: space-between;
+    background: #f9fafb;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+}
+.ranking-pos {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: #dce0e5; color: #1d2530;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; margin-right: 10px;
+}
+.ranking-pos.top1 { background: #facc15; color: #78350f; }
+.ranking-pos.top2 { background: #d1d5db; color: #1f2937; }
+.ranking-pos.top3 { background: #fdba74; color: #7c2d12; }
+
+.pill {
+    background: var(--axion-navy); color: #fff;
+    border-radius: 999px; padding: 4px 12px; font-size: 13px; font-weight: 600;
+}
+
+/* Login */
+.auth-bg {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--axion-navy-dark) url("../img/hero-bg.png") center/cover no-repeat;
+    padding: 16px;
+}
+.auth-card {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+    padding: 32px;
+    width: 100%;
+    max-width: 380px;
+}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Setores{% endblock %}
+{% block content %}
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        {% if user.is_admin %}
+        <li class="breadcrumb-item"><a href="{% url 'empresas:lista' %}">Empresas</a></li>
+        {% endif %}
+        <li class="breadcrumb-item"><a href="{% url 'empresas:detalhe' empresa.pk %}">{{ empresa.nome }}</a></li>
+        <li class="breadcrumb-item active">Setores</li>
+    </ol>
+</nav>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 mb-0">Setores de {{ empresa.nome }}</h1>
+    <a href="{% url 'setores:criar' empresa_id=empresa.pk %}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg"></i> Novo setor</a>
+</div>
+<div class="table-responsive">
+    <table class="table table-hover align-middle bg-white shadow-sm rounded">
+        <thead><tr><th>Nome</th><th></th></tr></thead>
+        <tbody>
+        {% for setor in setores %}
+        <tr>
+            <td>{{ setor.nome }}</td>
+            <td class="text-end">
+                <a href="{% url 'setores:editar' empresa_id=empresa.pk pk=setor.pk %}" class="btn btn-sm btn-outline-primary">Editar</a>
+                <a href="{% url 'setores:excluir' empresa_id=empresa.pk pk=setor.pk %}" class="btn btn-sm btn-outline-danger">Excluir</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="2" class="text-muted">Nenhum setor cadastrado.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% include "_pagination.html" %}
+{% endblock %}

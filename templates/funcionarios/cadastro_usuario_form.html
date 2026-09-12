@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Cadastrar usuário{% endblock %}
+{% block content %}
+{% if empresa_locked %}
+<h1 class="h4 mb-3">Cadastrar usuário em {{ empresa_locked.nome }}</h1>
+{% else %}
+<h1 class="h4 mb-3">Cadastrar novo usuário</h1>
+{% endif %}
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            {% if empresa_locked %}
+            <input type="hidden" name="empresa_id_lock" value="{{ empresa_locked.pk }}">
+            {% endif %}
+            {% include "_form_fields.html" %}
+            <button type="submit" class="btn btn-primary">Cadastrar</button>
+            {% if empresa_locked %}
+            <a href="{% url 'empresas:detalhe' empresa_locked.pk %}" class="btn btn-outline-secondary">Cancelar</a>
+            {% else %}
+            <a href="{% url 'core:home' %}" class="btn btn-outline-secondary">Cancelar</a>
+            {% endif %}
+        </form>
+    </div>
+</div>
+{% endblock %}

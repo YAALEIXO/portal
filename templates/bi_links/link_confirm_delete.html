@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Excluir link{% endblock %}
+{% block content %}
+<h1 class="h4">Excluir "{{ linkbi }}"?</h1>
+<p class="text-danger">Esta ação também excluirá, permanentemente, o histórico de acesso registrado para este link.</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Confirmar exclusão</button>
+    <a href="{% url 'bi_links_admin:admin_lista' empresa_id=empresa.pk %}" class="btn btn-outline-secondary">Cancelar</a>
+</form>
+{% endblock %}

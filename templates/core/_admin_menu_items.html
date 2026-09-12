@@ -1,0 +1,12 @@
+{% if user.is_admin or user.is_admin_empresa %}
+<li><a class="dropdown-item" href="{% url 'funcionarios:lista' %}"><i class="bi bi-people me-2"></i>Usuários</a></li>
+{% endif %}
+{% if user.is_admin %}
+<li><a class="dropdown-item" href="{% url 'empresas:lista' %}"><i class="bi bi-building me-2"></i>Empresas</a></li>
+{% elif user.is_admin_empresa and user.funcionario %}
+<li><a class="dropdown-item" href="{% url 'setores:lista' empresa_id=user.funcionario.empresa_id %}"><i class="bi bi-diagram-3 me-2"></i>Setores</a></li>
+<li><a class="dropdown-item" href="{% url 'bi_links_admin:admin_lista' empresa_id=user.funcionario.empresa_id %}"><i class="bi bi-link-45deg me-2"></i>Links de BI</a></li>
+{% endif %}
+{% if user.is_admin or user.is_diretor %}
+<li><a class="dropdown-item" href="{% url 'auditoria:lista' %}"><i class="bi bi-shield-check me-2"></i>Auditoria</a></li>
+{% endif %}

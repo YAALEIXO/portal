@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+{% block title %}Painel{% endblock %}
+{% block content %}
+
+{% if mostrar_painel_admin %}
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-4">
+        <div class="card h-100 text-center border-0 shadow-sm">
+            <div class="card-body">
+                <div class="kpi-icon mx-auto mb-2"><i class="bi bi-building"></i></div>
+                <div class="fs-2 fw-bold">{{ total_empresas }}</div>
+                <div class="fw-semibold">Empresas Cadastradas</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-4">
+        <div class="card h-100 text-center border-0 shadow-sm">
+            <div class="card-body">
+                <div class="kpi-icon mx-auto mb-2"><i class="bi bi-people-fill"></i></div>
+                <div class="fs-2 fw-bold">{{ total_usuarios }}</div>
+                <div class="fw-semibold">Total de Usuários</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-4">
+        <div class="card h-100 text-center border-0 shadow-sm">
+            <div class="card-body">
+                <div class="kpi-icon mx-auto mb-2"><i class="bi bi-bar-chart-fill"></i></div>
+                <div class="fs-2 fw-bold">{{ total_links }}</div>
+                <div class="fw-semibold">Total de Links Cadastrados</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
+        <h2 class="h5 mb-1">Links por Empresa</h2>
+        <p class="text-muted small">Quantidade de links de BI cadastrados em cada empresa.</p>
+        <canvas id="linksPorEmpresaChart" height="100"></canvas>
+    </div>
+</div>
+
+{{ links_por_empresa|json_script:"links-por-empresa-data" }}
+{% elif mostrar_indicadores %}
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="card h-100 text-center border-0 shadow-sm">
+            <div class="card-body">
+                <div class="kpi-icon mx-auto mb-2"><i class="bi bi-bar-chart-fill"></i></div>
+                <div class="fs-2 fw-bold">{{ total_links_ativos }}</div>
+                <div class="fw-semibold">Relatórios Ativos</div>
+                <div class="text-muted small">Disponíveis para consulta</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card h-100 text-center border-0 shadow-sm">
+            <div class="card-body">
+                <div class="kpi-icon mx-auto mb-2"><i class="bi bi-building"></i></div>
+                <div class="fs-2 fw-bold">{{ total_setores }}</div>
+                <div class="fw-semibold">Setores Conectados</div>
+                <div class="text-muted small">Áreas com permissão</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card h-100 text-center border-0 shadow-sm">
+            <div class="card-body">
+                <div class="kpi-icon mx-auto mb-2"><i class="bi bi-people-fill"></i></div>
+                <div class="fs-2 fw-bold">{{ usuarios_online }}</div>
+                <div class="fw-semibold">Usuários Online</div>
+                <div class="text-muted small">Conectados agora</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card h-100 text-center border-0 shadow-sm">
+            <div class="card-body">
+                <div class="kpi-icon mx-auto mb-2"><i class="bi bi-activity"></i></div>
+                <div class="fs-2 fw-bold">{{ conexoes_recentes }}</div>
+                <div class="fw-semibold">Conexões Recentes</div>
+                <div class="text-muted small">Últimas 24h</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
+        <h2 class="h5 mb-1">Indicadores de Alerta</h2>
+        <p class="text-muted small">Análise detalhada de acessos e performance do sistema</p>
+
+        <ul class="nav nav-tabs mb-3">
+            <li class="nav-item">
+                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-ranking" type="button">Ranking de Setores</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-links" type="button">Relatórios Mais Acessados</button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-frequencia" type="button">Frequência de Acessos</button>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane fade show active" id="tab-ranking">
+                <div class="row g-4">
+                    <div class="col-lg-6">
+                        <h3 class="h6">Ranking Geral de Setores</h3>
+                        <p class="text-muted small">Setores com mais acessos aos links de BI.</p>
+                        {% for item in ranking_setores %}
+                        <div class="ranking-item">
+                            <span>
+                                <span class="ranking-pos {% if forloop.counter == 1 %}top1{% elif forloop.counter == 2 %}top2{% elif forloop.counter == 3 %}top3{% endif %}">{{ forloop.counter }}</span>
+                                {{ item.link__setor__nome }}
+                            </span>
+                            <span class="pill">{{ item.total }} acessos</span>
+                        </div>
+                        {% empty %}
+                        <p class="text-muted small">Nenhum acesso registrado ainda.</p>
+                        {% endfor %}
+                    </div>
+                    <div class="col-lg-6">
+                        <h3 class="h6">Visualização Gráfica</h3>
+                        <canvas id="rankingChart" height="220"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="tab-links">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead><tr><th>Link</th><th>Acessos</th></tr></thead>
+                        <tbody>
+                        {% for item in top_links %}
+                        <tr><td>{{ item.link__nome }}</td><td>{{ item.total }}</td></tr>
+                        {% empty %}
+                        <tr><td colspan="2" class="text-muted">Nenhum acesso registrado ainda.</td></tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="tab-frequencia">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead><tr><th>Dia</th><th>Acessos</th></tr></thead>
+                        <tbody>
+                        {% for item in frequencia %}
+                        <tr><td>{{ item.dia }}</td><td>{{ item.total }}</td></tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{ ranking_setores|json_script:"ranking-data" }}
+{% else %}
+<h1 class="h4">Seus links de BI</h1>
+<p class="text-muted">Selecione um setor no menu ao lado ou acesse diretamente pela lista abaixo.</p>
+<div class="table-responsive">
+    <table class="table table-hover align-middle">
+        <thead><tr><th>Nome</th><th>Setor</th><th>Descrição</th><th></th></tr></thead>
+        <tbody>
+        {% for link in meus_links %}
+        <tr>
+            <td>{{ link.nome }}</td>
+            <td>{{ link.setor.nome }}</td>
+            <td>{{ link.descricao }}</td>
+            <td><a class="btn btn-sm btn-outline-primary" href="{% url 'bi_links:acessar' link.pk %}">Acessar <i class="bi bi-box-arrow-up-right"></i></a></td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4" class="text-muted">Nenhum link disponível para você.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+{% if mostrar_painel_admin %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+var linksPorEmpresaData = JSON.parse(document.getElementById('links-por-empresa-data').textContent);
+new Chart(document.getElementById('linksPorEmpresaChart'), {
+    type: 'bar',
+    data: {
+        labels: linksPorEmpresaData.map(function (i) { return i.setor__empresa__nome; }),
+        datasets: [{
+            label: 'Links',
+            data: linksPorEmpresaData.map(function (i) { return i.total; }),
+            backgroundColor: '#2badee',
+            borderRadius: 4,
+        }],
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
+    },
+});
+</script>
+{% elif mostrar_indicadores %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+var rankingData = JSON.parse(document.getElementById('ranking-data').textContent);
+new Chart(document.getElementById('rankingChart'), {
+    type: 'bar',
+    data: {
+        labels: rankingData.map(function (i) { return i.link__setor__nome; }),
+        datasets: [{
+            label: 'Acessos',
+            data: rankingData.map(function (i) { return i.total; }),
+            backgroundColor: '#122949',
+            borderRadius: 4,
+        }],
+    },
+    options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: { y: { beginAtZero: true, ticks: { precision: 0 } } },
+    },
+});
+</script>
+{% endif %}
+{% endblock %}

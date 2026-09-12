@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Empresa{% endblock %}
+{% block content %}
+<h1 class="h4 mb-3">{% if object %}Editar{% else %}Nova{% endif %} empresa</h1>
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            {% include "_form_fields.html" %}
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <a href="{% url 'empresas:lista' %}" class="btn btn-outline-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

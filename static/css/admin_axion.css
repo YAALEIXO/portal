@@ -1,0 +1,86 @@
+/* Axion branding for the built-in Django admin (/admin/) */
+
+:root {
+    --primary: #122949;
+    --primary-fg: #fff;
+    --secondary: #2badee;
+    --accent: #2badee;
+    --header-color: #fff;
+    --header-bg: #122949;
+    --header-branding-color: #fff;
+    --header-link-color: #fff;
+    --link-fg: #2badee;
+    --link-hover-color: #0c1c31;
+    --link-selected-fg: #122949;
+    --button-bg: #122949;
+    --button-hover-bg: #0c1c31;
+    --default-button-bg: #122949;
+    --default-button-hover-bg: #0c1c31;
+    --object-tools-bg: #2badee;
+    --object-tools-hover-bg: #122949;
+}
+
+#header {
+    background: var(--header-bg);
+    color: var(--header-color);
+}
+
+#branding h1, #branding h1 a:link, #branding h1 a:visited,
+#site-name a:link, #site-name a:visited {
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-brand-logo {
+    height: 28px;
+}
+
+div.breadcrumbs {
+    background: #0c1c31;
+    color: #cbd5e1;
+    border: none;
+}
+div.breadcrumbs a {
+    color: #fff;
+}
+
+.module h2, .module caption, .inline-group h2 {
+    background: var(--primary);
+    color: #fff;
+}
+
+a:link, a:visited {
+    color: var(--secondary);
+}
+a:focus, a:hover {
+    color: var(--link-hover-color);
+}
+
+.button, input[type="submit"], input[type="button"], .submit-row input, a.button {
+    background: var(--primary);
+    color: #fff;
+    border-radius: 4px;
+}
+.button:hover, input[type="submit"]:hover, input[type="button"]:hover {
+    background: var(--link-hover-color);
+}
+.button.default, input[type="submit"].default, .submit-row input.default {
+    background: var(--accent);
+}
+.button.default:hover, input[type="submit"].default:hover {
+    background: #1193d4;
+}
+
+#nav-sidebar .current-app .section, #nav-sidebar .current-model {
+    background: #e7f6fd;
+}
+
+.selector-chosen h2, .selector-available h2 {
+    background: var(--primary);
+}
+
+table thead th {
+    background: #eaedf0;
+}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Link de BI{% endblock %}
+{% block content %}
+<h1 class="h4 mb-3">{% if object %}Editar{% else %}Novo{% endif %} link de BI em {{ empresa.nome }}</h1>
+<div class="card border-0 shadow-sm">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            {% include "_form_fields.html" %}
+            <button type="submit" class="btn btn-primary">Salvar</button>
+            <a href="{% url 'bi_links_admin:admin_lista' empresa_id=empresa.pk %}" class="btn btn-outline-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Usuários{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h4 mb-0">Usuários cadastrados</h1>
+    <a href="{% url 'funcionarios:cadastrar_usuario' %}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg"></i> Novo usuário</a>
+</div>
+<div class="table-responsive">
+    <table class="table table-hover align-middle bg-white shadow-sm rounded">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                {% if user.is_admin %}<th>Empresa</th>{% endif %}
+                <th>Nível</th>
+                <th>Setor</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for funcionario in funcionarios %}
+        <tr>
+            <td>{{ funcionario.usuario }}</td>
+            {% if user.is_admin %}<td>{{ funcionario.empresa.nome }}</td>{% endif %}
+            <td><span class="badge text-bg-light border">{{ funcionario.usuario.get_role_display }}</span></td>
+            <td>{{ funcionario.setor.nome|default:"—" }}</td>
+            <td class="text-end">
+                <a href="{% url 'funcionarios:editar' pk=funcionario.pk %}" class="btn btn-sm btn-outline-primary">Editar</a>
+                <a href="{% url 'funcionarios:excluir' pk=funcionario.pk %}" class="btn btn-sm btn-outline-danger">Excluir</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="5" class="text-muted">Nenhum usuário cadastrado.</td></tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% include "_pagination.html" %}
+{% endblock %}

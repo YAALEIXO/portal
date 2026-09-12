@@ -1,0 +1,8 @@
+{% for group, options, index in widget.optgroups %}
+{% for option in options %}
+<div class="form-check form-check-inline">
+    {% include "django/forms/widgets/input.html" with widget=option %}
+    <label class="form-check-label" for="{{ option.attrs.id }}">{{ option.label }}</label>
+</div>
+{% endfor %}
+{% endfor %}

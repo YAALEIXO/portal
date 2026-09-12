@@ -1,0 +1,170 @@
+/* Shell interno do portal (sidebar + topbar), templates/base.html.
+   Paleta própria (navy escuro + laranja/teal), separada da paleta navy+sky
+   usada pelas páginas de conteúdo em portal.css — não mexe nelas. */
+
+.shell { display: flex; min-height: 100vh; width: 100%; }
+
+/* ---- Sidebar ---- */
+.shell-sidebar {
+    --shell-width: 268px;
+    width: var(--shell-width);
+    flex: 0 0 auto;
+    display: flex;
+    flex-direction: column;
+    background: #0a2036;
+    border-right: 1px solid rgba(120, 170, 255, 0.14);
+    transition: width .18s ease;
+}
+html.shell-collapsed .shell-sidebar { --shell-width: 76px; }
+
+/* O Bootstrap força background-color:transparent!important (e flex-grow:0)
+   no .offcanvas-lg/.offcanvas-body a partir de 992px, pra ele virar uma
+   sidebar "normal" sem aparência de painel. Aqui a gente quer mesmo o fundo
+   escuro sólido, então precisa sobrescrever explicitamente. */
+.shell-sidebar { background: #0a2036 !important; }
+.shell-sidebar > .offcanvas-body { flex: 1 1 auto !important; min-height: 0; }
+
+@media (min-width: 992px) {
+    .shell-sidebar { position: sticky; top: 0; align-self: flex-start; height: 100vh; overflow: hidden; }
+}
+
+.shell-sidebar-header {
+    display: flex; align-items: center; gap: 10px; height: 64px; padding: 0 14px;
+    border-bottom: 1px solid rgba(120, 170, 255, 0.14); flex: 0 0 auto;
+}
+.shell-logo-full { height: 26px; width: auto; display: block; margin-left: 4px; }
+.shell-logo-mini {
+    display: none; width: 36px; height: 36px; margin: 0 auto; border-radius: 10px;
+    background: rgba(78, 168, 255, 0.16); color: #fff; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 800;
+}
+html.shell-collapsed .shell-logo-full { display: none; }
+html.shell-collapsed .shell-logo-mini { display: flex; }
+
+.shell-collapse-btn {
+    flex: 0 0 auto; margin-left: auto; width: 28px; height: 28px; border: 0; border-radius: 8px;
+    background: rgba(120, 170, 255, 0.12); color: #9db4d4; font-size: 13px; font-weight: 700; cursor: pointer;
+}
+.shell-collapse-btn:hover { background: rgba(120, 170, 255, 0.22); color: #fff; }
+html.shell-collapsed .shell-collapse-btn { margin-left: 0; }
+
+html.shell-collapsed .shell-label,
+html.shell-collapsed .shell-nav-text,
+html.shell-collapsed .shell-empresa-info,
+html.shell-collapsed .shell-user-info {
+    display: none !important;
+}
+
+/* Empresa ativa */
+.shell-empresa-box { flex: 0 0 auto; padding: 14px 12px 10px; position: relative; }
+.shell-label {
+    margin: 0 0 8px; padding: 0 4px; font-size: 10px; font-weight: 700; letter-spacing: 0.18em;
+    text-transform: uppercase; color: #5f7da8;
+}
+.shell-empresa-btn {
+    display: flex; align-items: center; gap: 10px; width: 100%; padding: 9px 11px;
+    border: 1px solid rgba(150, 190, 240, 0.2); border-radius: 12px; background: rgba(10, 30, 54, 0.8);
+    cursor: pointer; color: inherit; text-align: left;
+}
+html.shell-collapsed .shell-empresa-btn { justify-content: center; padding: 8px 0; }
+.shell-empresa-btn:hover { border-color: rgba(150, 190, 240, 0.5); background: rgba(12, 36, 64, 0.95); }
+.shell-empresa-avatar {
+    flex: 0 0 auto; width: 30px; height: 30px; border-radius: 8px; background: rgba(58, 206, 197, 0.18);
+    color: #3acec5; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800;
+}
+.shell-empresa-info { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; text-align: left; }
+.shell-empresa-nome {
+    font-size: 13px; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.shell-empresa-cnpj { font-size: 11px; color: #8ba4c4; }
+.shell-empresa-chevron { flex: 0 0 auto; color: #8ba4c4; font-size: 11px; }
+
+.shell-empresa-menu {
+    margin-top: 8px; padding: 6px; border: 1px solid rgba(150, 190, 240, 0.18); border-radius: 12px;
+    background: rgba(9, 28, 50, 0.98); display: flex; flex-direction: column; gap: 2px;
+}
+.shell-empresa-menu a {
+    display: block; width: 100%; padding: 9px 11px; border-radius: 9px; background: transparent;
+    color: #b8cce6; font-size: 12.5px; font-weight: 600; line-height: 1.4; text-decoration: none;
+}
+.shell-empresa-menu a:hover { background: rgba(120, 170, 255, 0.14); color: #fff; }
+.shell-empresa-menu a.ativa { background: rgba(120, 170, 255, 0.16); color: #fff; }
+
+/* Navegação */
+.shell-nav { flex: 1 1 auto; overflow-y: auto; padding: 6px 12px 12px; display: flex; flex-direction: column; gap: 18px; }
+.shell-nav-group { display: flex; flex-direction: column; gap: 4px; }
+.shell-nav-link {
+    position: relative; display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px 12px;
+    border: 0; border-radius: 10px; cursor: pointer; font-size: 14px; font-weight: 500;
+    background: transparent; color: #b8cce6; text-decoration: none;
+}
+html.shell-collapsed .shell-nav-link { justify-content: center; padding: 10px 0; }
+.shell-nav-link:hover { background: rgba(120, 170, 255, 0.12); color: #fff; }
+.shell-nav-link .shell-nav-icon { flex: 0 0 auto; width: 22px; text-align: center; font-size: 15px; color: #7f9cbe; }
+.shell-nav-text { flex: 1 1 auto; min-width: 0; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.shell-nav-link.active {
+    background: rgba(78, 168, 255, 0.16); color: #fff; font-weight: 700;
+    box-shadow: inset 3px 0 0 #ff7a1a;
+}
+.shell-nav-link.active .shell-nav-icon { color: #ff9c4d; }
+
+/* Rodapé (usuário) */
+.shell-sidebar-footer { flex: 0 0 auto; padding: 12px; border-top: 1px solid rgba(120, 170, 255, 0.14); }
+.shell-user-mini {
+    display: flex; align-items: center; gap: 11px; padding: 8px 10px; border-radius: 12px;
+    background: rgba(120, 170, 255, 0.08);
+}
+html.shell-collapsed .shell-user-mini { justify-content: center; padding: 6px 0; }
+.shell-user-avatar {
+    flex: 0 0 auto; position: relative; width: 34px; height: 34px; border-radius: 999px; background: #ff7a1a;
+    color: #08121f; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800;
+}
+.shell-user-avatar .dot {
+    position: absolute; right: -1px; bottom: -1px; width: 10px; height: 10px; border-radius: 999px;
+    background: #3acec5; border: 2px solid #0a2036;
+}
+.shell-user-info { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.shell-user-nome { font-size: 13px; font-weight: 700; color: #fff; }
+.shell-user-papel { font-size: 11px; color: #8ba4c4; }
+
+/* ---- Topbar ---- */
+.shell-topbar {
+    position: sticky; top: 0; z-index: 30; display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    min-height: 64px; padding: 12px clamp(16px, 2.4vw, 28px); background: #fff; border-bottom: 1px solid #e2eaf4;
+}
+.shell-topbar-toggle {
+    flex: 0 0 auto; width: 36px; height: 36px; border: 1px solid #dbe5f1; border-radius: 10px; background: #f7fafd;
+    color: #42618a; font-size: 15px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+.shell-topbar-toggle:hover { background: #eef4fb; color: #0f2440; }
+.shell-breadcrumb { display: flex; align-items: center; gap: 7px; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #8ba0bb; }
+.shell-breadcrumb .current { color: #1d6fd0; }
+.shell-page-title { margin: 0; font-size: clamp(19px, 1.6vw, 23px); font-weight: 800; letter-spacing: -0.01em; color: #0f2440; }
+
+.shell-user-menu { position: relative; }
+.shell-user-menu-btn {
+    display: flex; align-items: center; gap: 10px; padding: 5px 12px 5px 6px; border: 1px solid #dbe5f1;
+    border-radius: 999px; background: #fff; cursor: pointer;
+}
+.shell-user-menu-btn:hover { border-color: #b9cee8; background: #f7fafd; }
+.shell-user-menu-avatar {
+    flex: 0 0 auto; width: 30px; height: 30px; border-radius: 999px; background: #0f2440; color: #fff;
+    display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800;
+}
+.shell-user-menu-panel {
+    position: absolute; right: 0; top: calc(100% + 8px); width: 220px; padding: 6px; border: 1px solid #e2eaf4;
+    border-radius: 14px; background: #fff; box-shadow: 0 22px 46px rgba(15, 36, 64, 0.16);
+    display: flex; flex-direction: column; gap: 2px; z-index: 40;
+}
+.shell-user-menu-panel .info { padding: 10px 12px 12px; border-bottom: 1px solid #eef2f8; margin-bottom: 4px; }
+.shell-user-menu-panel .info p { margin: 0; }
+.shell-user-menu-panel .info .nome { font-size: 13px; font-weight: 700; color: #0f2440; }
+.shell-user-menu-panel .info .papel { font-size: 12px; color: #6f88a8; margin-top: 3px; }
+.shell-logout-btn {
+    display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 12px; border: 0;
+    border-radius: 9px; background: transparent; color: #c0392b; font-size: 13.5px; font-weight: 700;
+    text-align: left; cursor: pointer;
+}
+.shell-logout-btn:hover { background: #fdf1ef; }
+
+.shell-main { flex: 1 1 auto; min-width: 0; padding: clamp(18px, 2.4vw, 30px); }

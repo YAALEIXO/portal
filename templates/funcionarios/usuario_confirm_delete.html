@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Excluir usuário{% endblock %}
+{% block content %}
+<h1 class="h4">Excluir "{{ object.usuario }}"?</h1>
+<p class="text-danger">Esta ação também excluirá, permanentemente, todos os links de BI criados por este usuário (com seus históricos de acesso) e o histórico de acesso do próprio usuário.</p>
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Confirmar exclusão</button>
+    <a href="{% url 'funcionarios:lista' %}" class="btn btn-outline-secondary">Cancelar</a>
+</form>
+{% endblock %}

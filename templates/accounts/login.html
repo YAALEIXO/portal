@@ -1,0 +1,134 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Entrar — Axion</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+</head>
+<body>
+<div class="auth-page">
+    <div class="auth-bg-gradient" aria-hidden="true"></div>
+    <div class="auth-bg-drift" aria-hidden="true"></div>
+    <div class="auth-bg-grid" aria-hidden="true"></div>
+
+    <svg class="auth-bg-waves" aria-hidden="true" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice">
+        <defs>
+            <linearGradient id="axw1" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#3acec5" stop-opacity="0" />
+                <stop offset="45%" stop-color="#3acec5" stop-opacity="0.75" />
+                <stop offset="100%" stop-color="#4ea8ff" stop-opacity="0" />
+            </linearGradient>
+            <linearGradient id="axw2" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#4ea8ff" stop-opacity="0" />
+                <stop offset="55%" stop-color="#4ea8ff" stop-opacity="0.6" />
+                <stop offset="100%" stop-color="#a78bfa" stop-opacity="0" />
+            </linearGradient>
+            <linearGradient id="axw3" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="10%" stop-color="#ff7a1a" stop-opacity="0" />
+                <stop offset="60%" stop-color="#ff7a1a" stop-opacity="0.5" />
+                <stop offset="100%" stop-color="#ff7a1a" stop-opacity="0" />
+            </linearGradient>
+        </defs>
+        <g fill="none" stroke-linecap="round">
+            <path d="M-60 700 C 260 560, 420 840, 760 660 C 1020 520, 1200 620, 1520 470" stroke="url(#axw1)" stroke-width="2.2" />
+            <path d="M-60 760 C 280 620, 440 900, 780 720 C 1040 580, 1220 680, 1520 530" stroke="url(#axw1)" stroke-width="1.2" opacity="0.6" />
+            <path d="M-60 250 C 300 120, 520 320, 840 200 C 1100 100, 1260 210, 1520 120" stroke="url(#axw2)" stroke-width="1.8" />
+            <path d="M-60 320 C 320 190, 540 390, 860 270 C 1120 170, 1280 280, 1520 190" stroke="url(#axw2)" stroke-width="1" opacity="0.55" />
+            <path d="M-60 520 C 340 430, 560 600, 900 500 C 1160 425, 1300 500, 1520 430" stroke="url(#axw3)" stroke-width="1.4" />
+        </g>
+    </svg>
+
+    <div class="auth-grid">
+        <div class="auth-intro">
+            <img src="{% static 'img/logo-claro.png' %}?v=2" alt="Axion — Inteligência de dados">
+            <p class="auth-kicker">Área do cliente</p>
+            <h1 class="auth-title">Seus painéis, <span class="accent">num só lugar.</span></h1>
+            <p class="auth-lede">
+                Acesse os dashboards da sua operação com dados atualizados e acompanhe os
+                indicadores que importam para a sua decisão de hoje.
+            </p>
+            <div class="auth-bullets">
+                <div class="auth-bullet">
+                    <span class="auth-bullet-icon" style="background: rgba(58, 206, 197, 0.16); color: #3acec5;">◎</span>
+                    Indicadores atualizados automaticamente
+                </div>
+                <div class="auth-bullet">
+                    <span class="auth-bullet-icon" style="background: rgba(78, 168, 255, 0.16); color: #4ea8ff;">⛨</span>
+                    Acesso individual e controlado por perfil
+                </div>
+            </div>
+        </div>
+
+        <div class="auth-form-wrap">
+            <form method="post" class="auth-form">
+                {% csrf_token %}
+                <div>
+                    <h2>Entrar no dashboard</h2>
+                    <p class="auth-form-sub">Use o usuário cadastrado pela Axion.</p>
+                </div>
+
+                {% for error in form.non_field_errors %}
+                <p class="auth-alert auth-alert-error">{{ error }}</p>
+                {% endfor %}
+
+                <label>Usuário
+                    <input name="username" type="text" required autofocus autocomplete="username"
+                           placeholder="seu.usuario" value="{{ form.username.value|default:'' }}">
+                </label>
+                {% for error in form.username.errors %}
+                <p class="auth-alert auth-alert-error">{{ error }}</p>
+                {% endfor %}
+
+                <label>Senha
+                    <span class="auth-password-field">
+                        <input id="senhaInput" name="password" type="password" required
+                               autocomplete="current-password" placeholder="••••••••">
+                        <button type="button" id="toggleSenha" class="auth-toggle-senha">Ver</button>
+                    </span>
+                </label>
+                {% for error in form.password.errors %}
+                <p class="auth-alert auth-alert-error">{{ error }}</p>
+                {% endfor %}
+
+                <div class="auth-form-row">
+                    <label class="auth-remember">
+                        <input type="checkbox" name="lembrar">
+                        Manter conectado
+                    </label>
+                    <a href="https://wa.me/5591992970982?text=Ol%C3%A1!%20Esqueci%20minha%20senha%20do%20Portal%20Axion%2C%20podem%20me%20ajudar%3F" target="_blank" rel="noopener" class="auth-forgot">
+                        Esqueci minha senha
+                    </a>
+                </div>
+
+                {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+                <button type="submit" class="auth-submit">Acessar</button>
+
+                <div class="auth-footer-note">
+                    <span>Ainda não tem acesso?</span>
+                    <a href="https://wa.me/5591992970982" target="_blank" rel="noopener">Falar com a Axion</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="auth-page-footer">
+        <span>&copy; {% now "Y" %} Axion Inteligência de Dados</span>
+        <a href="{% url 'core:home' %}">&larr; Voltar ao site</a>
+    </div>
+</div>
+
+<script>
+document.getElementById('toggleSenha').addEventListener('click', function () {
+    var input = document.getElementById('senhaInput');
+    var mostrar = input.type === 'password';
+    input.type = mostrar ? 'text' : 'password';
+    this.textContent = mostrar ? 'Ocultar' : 'Ver';
+});
+</script>
+</body>
+</html>

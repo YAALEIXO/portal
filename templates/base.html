@@ -1,0 +1,184 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<script>
+(function () {
+    try {
+        if (localStorage.getItem("axion.portal.sidebar") === "1") {
+            document.documentElement.classList.add("shell-collapsed");
+        }
+    } catch (e) {}
+})();
+</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Portal Axion{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="{% static 'css/portal.css' %}">
+    <link rel="stylesheet" href="{% static 'css/shell.css' %}?v=2">
+</head>
+<body>
+{% if user.is_authenticated %}
+<nav class="navbar d-lg-none px-3" style="background: #0a2036;">
+    <div class="d-flex align-items-center">
+        <button class="navbar-toggler text-white border-0" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarOffcanvas">
+            <i class="bi bi-list text-white fs-3"></i>
+        </button>
+        <a class="navbar-brand ms-2" href="{% url 'core:home' %}">
+            <img src="{% static 'img/logo-claro.png' %}" alt="Axion" height="28">
+        </a>
+    </div>
+</nav>
+
+<div class="shell">
+    <aside class="offcanvas-lg offcanvas-start shell-sidebar" tabindex="-1" id="sidebarOffcanvas">
+        <div class="offcanvas-header d-lg-none" style="border-bottom: 1px solid rgba(120,170,255,.14);">
+            <h5 class="offcanvas-title text-white">Menu</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" data-bs-target="#sidebarOffcanvas"></button>
+        </div>
+        <div class="offcanvas-body d-flex flex-column p-0">
+            <div class="shell-sidebar-header d-none d-lg-flex">
+                <a href="{% url 'core:home' %}" class="d-flex align-items-center">
+                    <img src="{% static 'img/logo-claro.png' %}" alt="Axion" class="shell-logo-full">
+                    <span class="shell-logo-mini">A</span>
+                </a>
+                <button type="button" class="shell-collapse-btn shell-collapse-toggle" title="Recolher/expandir menu" aria-label="Recolher/expandir menu">«</button>
+            </div>
+
+            {% if user.is_admin or user.is_admin_empresa %}
+            <div class="shell-empresa-box">
+                <p class="shell-label">Empresa ativa</p>
+                {% if user.is_admin %}
+                <button type="button" class="shell-empresa-btn" id="shellEmpresaToggle" title="{{ empresa_ativa.nome|default:'Nenhuma empresa cadastrada' }}" aria-expanded="false">
+                    <span class="shell-empresa-avatar">{{ empresa_ativa.nome|default:"--"|slice:":2"|upper }}</span>
+                    <span class="shell-empresa-info">
+                        <span class="shell-empresa-nome">{{ empresa_ativa.nome|default:"Nenhuma empresa" }}</span>
+                        {% if empresa_ativa %}<span class="shell-empresa-cnpj">CNPJ {{ empresa_ativa.cnpj }}</span>{% endif %}
+                    </span>
+                    <span class="shell-empresa-chevron">▾</span>
+                </button>
+                <div class="shell-empresa-menu" id="shellEmpresaMenu" hidden>
+                    {% for emp in empresas_disponiveis %}
+                    <a href="{% url 'empresas:detalhe' emp.pk %}" class="{% if empresa_ativa.pk == emp.pk %}ativa{% endif %}">{{ emp.nome }}</a>
+                    {% empty %}
+                    <span class="text-white-50 small px-2">Nenhuma empresa cadastrada</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="shell-empresa-btn" style="cursor: default;">
+                    <span class="shell-empresa-avatar">{{ empresa_ativa.nome|slice:":2"|upper }}</span>
+                    <span class="shell-empresa-info">
+                        <span class="shell-empresa-nome">{{ empresa_ativa.nome }}</span>
+                        <span class="shell-empresa-cnpj">CNPJ {{ empresa_ativa.cnpj }}</span>
+                    </span>
+                </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <nav class="shell-nav">
+                {% for grupo in grupos_nav %}
+                <div class="shell-nav-group">
+                    <p class="shell-label">{{ grupo.titulo }}</p>
+                    {% for item in grupo.itens %}
+                    <a href="{{ item.url }}" class="shell-nav-link{% if item.ativo %} active{% endif %}" {% if item.ativo %}aria-current="page"{% endif %}>
+                        <span class="shell-nav-icon bi {{ item.icone }}"></span>
+                        <span class="shell-nav-text">{{ item.label }}</span>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+
+                {% if sidebar_setores %}
+                <div class="shell-nav-group">
+                    <p class="shell-label">Meus links</p>
+                    {% for setor in sidebar_setores %}
+                    {% for link in setor.links_visiveis %}
+                    <a href="{% url 'bi_links:acessar' link.pk %}" class="shell-nav-link" title="{{ setor.nome }}">
+                        <span class="shell-nav-icon bi bi-box-arrow-up-right"></span>
+                        <span class="shell-nav-text">{{ link.nome }}</span>
+                    </a>
+                    {% empty %}
+                    <span class="shell-nav-text px-2 text-white-50 small">Nenhum link ativo em {{ setor.nome }}</span>
+                    {% endfor %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </nav>
+
+            <div class="shell-sidebar-footer">
+                <div class="shell-user-mini">
+                    <span class="shell-user-avatar">{{ user.username|slice:":2"|upper }}<span class="dot"></span></span>
+                    <span class="shell-user-info">
+                        <span class="shell-user-nome">{{ user.first_name|default:user.username }}</span>
+                        <span class="shell-user-papel">{{ user.get_role_display }} · Online</span>
+                    </span>
+                </div>
+                <form action="{% url 'accounts:logout' %}" method="post" class="mt-2 d-lg-none">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-light btn-sm w-100">Sair</button>
+                </form>
+            </div>
+        </div>
+    </aside>
+
+    <div class="flex-grow-1 d-flex flex-column" style="min-width: 0;">
+        <header class="shell-topbar">
+            <button type="button" class="shell-topbar-toggle shell-collapse-toggle d-none d-lg-flex" aria-label="Recolher/expandir menu">
+                <i class="bi bi-list"></i>
+            </button>
+            <div class="flex-grow-1" style="min-width: 0;">
+                <div class="shell-breadcrumb">
+                    <span>Portal</span><span>›</span><span class="current">{{ titulo_pagina_shell }}</span>
+                </div>
+                <h1 class="shell-page-title text-truncate">{{ titulo_pagina_shell }}</h1>
+            </div>
+            <div class="shell-user-menu">
+                <button type="button" class="shell-user-menu-btn" id="shellUserMenuToggle" aria-expanded="false">
+                    <span class="shell-user-menu-avatar">{{ user.username|slice:":2"|upper }}</span>
+                    <span class="d-none d-sm-flex flex-column text-start" style="gap: 1px;">
+                        <span style="font-size: 13px; font-weight: 700; color: #0f2440;">{{ user.first_name|default:user.username }}</span>
+                        <span style="font-size: 11px; color: #6f88a8;">{{ user.get_role_display }}</span>
+                    </span>
+                    <span style="color: #8ba0bb; font-size: 10px;">▾</span>
+                </button>
+                <div class="shell-user-menu-panel" id="shellUserMenuPanel" hidden>
+                    <div class="info">
+                        <p class="nome">{{ user }}</p>
+                        <p class="papel">{{ user.email|default:user.get_role_display }}</p>
+                    </div>
+                    <form action="{% url 'accounts:logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="shell-logout-btn"><i class="bi bi-box-arrow-right me-1"></i> Sair do portal</button>
+                    </form>
+                </div>
+            </div>
+        </header>
+
+        <main class="shell-main">
+{% else %}
+<div class="auth-bg">
+    <div class="auth-card">
+{% endif %}
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags|default:'info' }}">{{ message }}</div>
+            {% endfor %}
+            {% endif %}
+            {% block content %}{% endblock %}
+{% if user.is_authenticated %}
+        </main>
+    </div>
+</div>
+{% else %}
+    </div>
+</div>
+{% endif %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{% static 'js/shell.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>
