@@ -93,15 +93,15 @@
 
                 {% if sidebar_setores %}
                 <div class="shell-nav-group">
-                    <p class="shell-label">Meus links</p>
                     {% for setor in sidebar_setores %}
+                    <p class="shell-label">{{ setor.nome }}</p>
                     {% for link in setor.links_visiveis %}
-                    <a href="{% url 'bi_links:acessar' link.pk %}" class="shell-nav-link" title="{{ setor.nome }}">
+                    <a href="{% url 'bi_links:acessar' link.pk %}" class="shell-nav-link">
                         <span class="shell-nav-icon bi bi-box-arrow-up-right"></span>
                         <span class="shell-nav-text">{{ link.nome }}</span>
                     </a>
                     {% empty %}
-                    <span class="shell-nav-text px-2 text-white-50 small">Nenhum link ativo em {{ setor.nome }}</span>
+                    <span class="shell-nav-text px-2 text-white-50 small">Nenhum link ativo</span>
                     {% endfor %}
                     {% endfor %}
                 </div>

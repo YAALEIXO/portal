@@ -44,7 +44,6 @@ GRUPOS = [
         "titulo": "Painéis",
         "itens": [
             NavItem("Visão geral", "bi-grid-1x2", "core:home"),
-            NavItem("Relatórios", "bi-bar-chart-line", "bi_links:lista"),
         ],
     },
     {

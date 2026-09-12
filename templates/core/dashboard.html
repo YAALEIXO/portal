@@ -4,7 +4,7 @@
 
 {% if mostrar_painel_admin %}
 <div class="row g-3 mb-4">
-    <div class="col-6 col-lg-4">
+    <div class="col-6 col-lg-3">
         <div class="card h-100 text-center border-0 shadow-sm">
             <div class="card-body">
                 <div class="kpi-icon mx-auto mb-2"><i class="bi bi-building"></i></div>
@@ -13,7 +13,16 @@
             </div>
         </div>
     </div>
-    <div class="col-6 col-lg-4">
+    <div class="col-6 col-lg-3">
+        <div class="card h-100 text-center border-0 shadow-sm">
+            <div class="card-body">
+                <div class="kpi-icon mx-auto mb-2"><i class="bi bi-diagram-3"></i></div>
+                <div class="fs-2 fw-bold">{{ total_setores }}</div>
+                <div class="fw-semibold">Setores Cadastrados</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
         <div class="card h-100 text-center border-0 shadow-sm">
             <div class="card-body">
                 <div class="kpi-icon mx-auto mb-2"><i class="bi bi-people-fill"></i></div>
@@ -22,7 +31,7 @@
             </div>
         </div>
     </div>
-    <div class="col-6 col-lg-4">
+    <div class="col-6 col-lg-3">
         <div class="card h-100 text-center border-0 shadow-sm">
             <div class="card-body">
                 <div class="kpi-icon mx-auto mb-2"><i class="bi bi-bar-chart-fill"></i></div>
@@ -99,7 +108,7 @@
                 <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-links" type="button">Relatórios Mais Acessados</button>
             </li>
             <li class="nav-item">
-                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-frequencia" type="button">Frequência de Acessos</button>
+                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-usuarios" type="button">Ranking de Usuários</button>
             </li>
         </ul>
 
@@ -143,13 +152,18 @@
                 </div>
             </div>
 
-            <div class="tab-pane fade" id="tab-frequencia">
+            <div class="tab-pane fade" id="tab-usuarios">
                 <div class="table-responsive">
                     <table class="table table-hover align-middle">
-                        <thead><tr><th>Dia</th><th>Acessos</th></tr></thead>
+                        <thead><tr><th>Usuário</th><th>Acessos</th></tr></thead>
                         <tbody>
-                        {% for item in frequencia %}
-                        <tr><td>{{ item.dia }}</td><td>{{ item.total }}</td></tr>
+                        {% for item in ranking_usuarios %}
+                        <tr>
+                            <td>{{ item.usuario__first_name|default:item.usuario__username }}</td>
+                            <td>{{ item.total }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="2" class="text-muted">Nenhum acesso registrado ainda.</td></tr>
                         {% endfor %}
                         </tbody>
                     </table>
@@ -161,6 +175,27 @@
 
 {{ ranking_setores|json_script:"ranking-data" }}
 {% else %}
+<div class="row g-3 mb-4">
+    <div class="col-6 col-lg-3">
+        <div class="card h-100 text-center border-0 shadow-sm">
+            <div class="card-body">
+                <div class="kpi-icon mx-auto mb-2"><i class="bi bi-diagram-3"></i></div>
+                <div class="fs-2 fw-bold">{{ total_setores }}</div>
+                <div class="fw-semibold">Setores</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-3">
+        <div class="card h-100 text-center border-0 shadow-sm">
+            <div class="card-body">
+                <div class="kpi-icon mx-auto mb-2"><i class="bi bi-bar-chart-fill"></i></div>
+                <div class="fs-2 fw-bold">{{ total_links }}</div>
+                <div class="fw-semibold">Links</div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <h1 class="h4">Seus links de BI</h1>
 <p class="text-muted">Selecione um setor no menu ao lado ou acesse diretamente pela lista abaixo.</p>
 <div class="table-responsive">

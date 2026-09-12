@@ -1,6 +1,7 @@
 from django.test import TestCase
 
 from accounts.models import Usuario
+from auditoria.models import AcessoLog
 from bi_links.models import LinkBI
 from empresas.models import Empresa
 from funcionarios.models import Funcionario
@@ -66,7 +67,9 @@ class DashboardPorPapelTests(TestCase):
         self.assertEqual(resp.context["total_links"], 3)
         por_empresa = {i["setor__empresa__nome"]: i["total"] for i in resp.context["links_por_empresa"]}
         self.assertEqual(por_empresa, {"Empresa A": 1, "Empresa B": 2})
+        self.assertEqual(resp.context["total_setores"], 2)
         self.assertContains(resp, "Empresas Cadastradas")
+        self.assertContains(resp, "Setores Cadastrados")
         self.assertContains(resp, "Total de Links Cadastrados")
 
     def test_admin_empresa_ve_indicadores_da_propria_empresa(self):
@@ -83,12 +86,28 @@ class DashboardPorPapelTests(TestCase):
         self.assertTrue(resp.context["mostrar_indicadores"])
         self.assertContains(resp, "Indicadores de Alerta")
 
+    def test_indicadores_mostram_ranking_de_usuarios_em_vez_de_frequencia(self):
+        diretor = Usuario.objects.get(username="diretor_a")
+        AcessoLog.objects.create(usuario=diretor, link=self.link_a)
+        AcessoLog.objects.create(usuario=diretor, link=self.link_a)
+
+        self.client.login(username="diretor_a", password="senha12345")
+        resp = self.client.get("/")
+        self.assertContains(resp, "Ranking de Usuários")
+        self.assertNotContains(resp, "Frequência de Acessos")
+        ranking = resp.context["ranking_usuarios"]
+        self.assertEqual(ranking[0]["usuario__username"], "diretor_a")
+        self.assertEqual(ranking[0]["total"], 2)
+
     def test_normal_ve_apenas_seus_links(self):
         self.client.login(username="normal_a", password="senha12345")
         resp = self.client.get("/")
         self.assertFalse(resp.context.get("mostrar_painel_admin"))
         self.assertFalse(resp.context["mostrar_indicadores"])
         self.assertContains(resp, "Seus links de BI")
+        self.assertEqual(resp.context["total_setores"], 1)
+        # normal_a não tem nenhum link liberado explicitamente em setUp.
+        self.assertEqual(resp.context["total_links"], 0)
 
 
 class ShellNavTests(TestCase):
@@ -153,3 +172,20 @@ class ShellNavTests(TestCase):
         titulos = [g["titulo"] for g in resp.context["grupos_nav"]]
         self.assertNotIn("Administração", titulos)
         self.assertNotIn("Sistema", titulos)
+
+    def test_relatorios_nao_existe_mais_na_navegacao(self):
+        self.client.login(username="admin_x", password="senha12345")
+        resp = self.client.get("/")
+        labels = [item["label"] for grupo in resp.context["grupos_nav"] for item in grupo["itens"]]
+        self.assertNotIn("Relatórios", labels)
+
+    def test_link_do_setor_aparece_com_nome_do_setor_na_sidebar(self):
+        link = LinkBI.objects.create(
+            setor=self.setor_a, nome="Dashboard Financeiro", url="https://example.com/x",
+            criado_por=self.admin,
+        )
+        self.f_normal_a.links_liberados.add(link)
+        self.client.login(username="normal_a", password="senha12345")
+        resp = self.client.get("/")
+        self.assertContains(resp, self.setor_a.nome)
+        self.assertContains(resp, "Dashboard Financeiro")

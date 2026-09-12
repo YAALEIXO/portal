@@ -10,6 +10,7 @@ from auditoria.models import AcessoLog
 from bi_links.models import LinkBI
 from empresas.models import Empresa
 from funcionarios.models import Funcionario
+from setores.models import Setor
 
 MINUTOS_PARA_CONSIDERAR_ONLINE = 5
 
@@ -41,9 +42,10 @@ class DashboardView(TemplateView):
         context["mostrar_indicadores"] = user.is_admin_empresa or user.is_diretor
 
         if not context["mostrar_indicadores"]:
-            context["meus_links"] = (
-                LinkBI.objects.visible_to(user).filter(ativo=True).select_related("setor")
-            )
+            meus_links = LinkBI.objects.visible_to(user).filter(ativo=True).select_related("setor")
+            context["meus_links"] = meus_links
+            context["total_setores"] = 1 if getattr(getattr(user, "funcionario", None), "setor_id", None) else 0
+            context["total_links"] = meus_links.count()
             return context
 
         context.update(self._indicadores_empresa(user))
@@ -57,6 +59,7 @@ class DashboardView(TemplateView):
         )
         return {
             "total_empresas": Empresa.objects.count(),
+            "total_setores": Setor.objects.count(),
             "total_usuarios": Funcionario.objects.count(),
             "total_links": LinkBI.objects.count(),
             "links_por_empresa": links_por_empresa,
@@ -85,11 +88,11 @@ class DashboardView(TemplateView):
             .annotate(total=Count("id"))
             .order_by("-total")[:10]
         )
-        frequencia = []
-        for i in range(6, -1, -1):
-            dia = (agora - timedelta(days=i)).date()
-            total = acessos_visiveis.filter(acessado_em__date=dia).count()
-            frequencia.append({"dia": dia.strftime("%d/%m"), "total": total})
+        ranking_usuarios = list(
+            acessos_visiveis.values("usuario__username", "usuario__first_name")
+            .annotate(total=Count("id"))
+            .order_by("-total")[:10]
+        )
 
         return {
             "total_links_ativos": links_visiveis.count(),
@@ -98,5 +101,5 @@ class DashboardView(TemplateView):
             "conexoes_recentes": acessos_visiveis.filter(acessado_em__gte=cutoff_24h).count(),
             "ranking_setores": ranking_setores,
             "top_links": top_links,
-            "frequencia": frequencia,
+            "ranking_usuarios": ranking_usuarios,
         }
